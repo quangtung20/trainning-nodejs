@@ -5,7 +5,7 @@ const commentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    tag: Object,
+    tag: Object, // ten goi y vd: @avbc
     reply: mongoose.Types.ObjectId,
     likes: [{type: mongoose.Types.ObjectId, ref: 'user'}],
     user: {type: mongoose.Types.ObjectId, ref: 'user'},

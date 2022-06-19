@@ -2,20 +2,7 @@ const Posts = require('../models/postModel')
 const Comments = require('../models/commentModel')
 const Users = require('../models/userModel')
 
-class APIfeatures {
-    constructor(query, queryString){
-        this.query = query;
-        this.queryString = queryString;
-    }
 
-    paginating(){
-        const page = this.queryString.page * 1 || 1
-        const limit = this.queryString.limit * 1 || 9
-        const skip = (page - 1) * limit
-        this.query = this.query.skip(skip).limit(limit)
-        return this;
-    }
-}
 
 const postCtrl = {
     createPost: async (req, res) => {
@@ -43,19 +30,11 @@ const postCtrl = {
     },
     getPosts: async (req, res) => {
         try {
-            const features =  new APIfeatures(Posts.find({
-                user: [...req.user.following, req.user._id]
-            }), req.query).paginating()
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+            skip = (page - 1)*limit;
 
-            const posts = await features.query.sort('-createdAt')
-            .populate("user likes", "avatar username fullname followers")
-            .populate({
-                path: "comments",
-                populate: {
-                    path: "user likes",
-                    select: "-password"
-                }
-            })
+            const posts = await Posts.find().skip(skip).limit(limit);
 
             res.json({
                 msg: 'Success!',
@@ -127,9 +106,14 @@ const postCtrl = {
     },
     getUserPosts: async (req, res) => {
         try {
-            const features = new APIfeatures(Posts.find({user: req.params.id}), req.query)
-            .paginating()
-            const posts = await features.query.sort("-createdAt")
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+            skip = (page - 1)*limit;
+
+            const posts = await Posts.find({user: req.params.id})
+                .sort("-createdAt")
+                .skip(skip)
+                .limit(limit)
 
             res.json({
                 posts,
@@ -234,11 +218,16 @@ const postCtrl = {
     },
     getSavePosts: async (req, res) => {
         try {
-            const features = new APIfeatures(Posts.find({
-                _id: {$in: req.user.saved}
-            }), req.query).paginating()
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 10;
+            skip = (page - 1)*limit;
 
-            const savePosts = await features.query.sort("-createdAt")
+            const savePosts = await Posts.find({
+                _id:{$in: req.user.saved}
+            })
+            .sort("-createdAt")
+            .skip(skip)
+            .limit(limit)
 
             res.json({
                 savePosts,

@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png'
     },
-    role: {type: String, default: 'user'},
+    role: {type: String, default: 'user'}, // co role admin
     gender: {type: String, default: 'male'},
     mobile: {type: String, default: ''},
     address: {type: String, default: ''},
@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema({
         maxlength: 200
     },
     website: {type: String, default: ''},
-    followers: [{type: mongoose.Types.ObjectId, ref: 'user'}],
-    following: [{type: mongoose.Types.ObjectId, ref: 'user'}],
+    followers: [{type: mongoose.Types.ObjectId, ref: 'user'}], // nhung nguoi theo doi minh
+    following: [{type: mongoose.Types.ObjectId, ref: 'user'}], // nhung nguoi minh dang theo doi
     saved: [{type: mongoose.Types.ObjectId, ref: 'user'}]
 }, {
     timestamps: true

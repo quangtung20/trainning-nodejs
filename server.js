@@ -10,10 +10,10 @@ var morgan = require('morgan')
 
 
 const app = express()
-app.use(express.json())
-app.use(cors())
+app.use(express.json()) // middleware cua express
+app.use(cors()) 
 app.use(cookieParser())
-app.use(morgan('dev'))
+app.use(morgan('dev')) // hien http request
 
 
 // Socket
@@ -24,12 +24,13 @@ io.on('connection', socket => {
     SocketServer(socket)
 })
 
+
 // Create peer server
 ExpressPeerServer(http, { path: '/' })
 
 
 // Routes
-app.use('/api', require('./routes/authRouter'))
+app.use('/api', require('./routes/authRouter')) 
 app.use('/api', require('./routes/userRouter'))
 app.use('/api', require('./routes/postRouter'))
 app.use('/api', require('./routes/commentRouter'))
@@ -49,7 +50,7 @@ mongoose.connect(URI, {
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static('client/build'))
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')) // thong thuong 
     })
 }
 
